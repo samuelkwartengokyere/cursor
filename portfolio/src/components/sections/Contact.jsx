@@ -1,25 +1,41 @@
-import React from 'react'
+import React, { useRef, useState } from 'react'
+import emailjs from '@emailjs/browser'
 import './Contact.css'
 
 // Contact section with a simple, styled form layout
 const Contact = () => {
-  // On submit, open the user's email client with the form values prefilled
+  const formRef = useRef()
+  const [loading, setLoading] = useState(false)
+  const [success, setSuccess] = useState(false)
+  const [error, setError] = useState(false)
+
   const handleSubmit = (event) => {
     event.preventDefault()
-    const formData = new FormData(event.target)
-    const name = formData.get('name')
-    const email = formData.get('email')
-    const message = formData.get('message')
+    setLoading(true)
+    setSuccess(false)
+    setError(false)
 
-    const subject = encodeURIComponent(`New message from portfolio - ${name}`)
-    const body = encodeURIComponent(
-      `Name: ${name}\nEmail: ${email}\n\nMessage:\n${message}`,
-    )
-
-    window.location.href = `mailto:samfine278@gmail.com?subject=${subject}&body=${body}`
-
-    // Optional: clear the form after triggering the email client
-    event.target.reset()
+    emailjs
+      .sendForm(
+        import.meta.env.VITE_EMAILJS_SERVICE_ID,
+        import.meta.env.VITE_EMAILJS_TEMPLATE_ID,
+        formRef.current,
+        {
+          publicKey: import.meta.env.VITE_EMAILJS_PUBLIC_KEY,
+        }
+      )
+      .then(
+        () => {
+          setLoading(false)
+          setSuccess(true)
+          event.target.reset()
+        },
+        (error) => {
+          console.error('FAILED...', error.text)
+          setLoading(false)
+          setError(true)
+        }
+      )
   }
 
   return (
@@ -44,15 +60,15 @@ const Contact = () => {
           </p>
         </div>
 
-        <form className="contact__form" onSubmit={handleSubmit}>
+        <form className="contact__form" ref={formRef} onSubmit={handleSubmit}>
           <div className="field">
             <label htmlFor="name">Name</label>
-            <input id="name" name="name" type="text" placeholder="Your name" required />
+            <input id="name" name="user_name" type="text" placeholder="Your name" required />
           </div>
 
           <div className="field">
             <label htmlFor="email">Email</label>
-            <input id="email" name="email" type="email" placeholder="you@example.com" required />
+            <input id="email" name="user_email" type="email" placeholder="you@example.com" required />
           </div>
 
           <div className="field">
@@ -60,9 +76,12 @@ const Contact = () => {
             <textarea id="message" name="message" rows="4" placeholder="Tell me about your project or idea" required />
           </div>
 
-          <button type="submit" className="btn btn--primary btn--full">
-            Send Message
+          <button type="submit" className="btn btn--primary btn--full" disabled={loading}>
+            {loading ? 'Sending...' : 'Send Message'}
           </button>
+
+          {success && <p className="form-feedback success">Message sent successfully!</p>}
+          {error && <p className="form-feedback error">Failed to send message. Please try again.</p>}
         </form>
       </div>
     </section>

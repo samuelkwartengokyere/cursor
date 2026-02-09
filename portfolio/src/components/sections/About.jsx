@@ -32,7 +32,7 @@ const About = () => {
             structures, and information technology.
           </p>
           <p>
-            My interests span frontend engineering, cloud computing, and the application of artificial intelligence to
+            My interests span frontend engineering,mobile application development, cloud computing, and the application of artificial intelligence to
             real-world problems. I&apos;m committed to continuous learning, clear technical communication, and building
             interfaces that are both intuitive and performant.
           </p>

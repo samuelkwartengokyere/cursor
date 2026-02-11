@@ -26,10 +26,10 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased bg-gray-50 min-h-screen`}
+        className={`${geistSans.variable} ${geistMono.variable} antialiased bg-[conic-gradient(at_top_left,_var(--tw-gradient-stops))] from-indigo-100 via-slate-100 to-teal-100 dark:from-gray-900 dark:via-slate-900 dark:to-black min-h-screen flex flex-col`}
       >
         <Navbar />
-        <main className="container mx-auto p-4">{children}</main>
+        <main className="container mx-auto p-4 flex-1 flex flex-col justify-center">{children}</main>
       </body>
     </html>
   );
